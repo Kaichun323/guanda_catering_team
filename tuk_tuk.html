@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>攤位詳情介紹</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /* 延續前面頁面的藍色漸層背景 */
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #93c5fd 100%);
+            padding: 40px 20px;
+        }
+
+        /* 大標題（對應圖中的 About our Spa） */
+        .page-header {
+            color: white;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* 中央主要的毛玻璃大卡片 */
+        .detail-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px; /* 完美的圓角感 */
+            max-width: 1000px;
+            width: 100%;
+            padding: 50px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            
+            /* 關鍵：利用 flex 讓內容左右並排 */
+            display: flex;
+            align-items: center;
+            gap: 50px; /* 左右兩區塊的間距 */
+        }
+
+        /* 左側圖片區塊 */
+        .card-image-wrapper {
+            flex: 1; /* 左右各佔一半空間 */
+            width: 100%;
+        }
+
+        .card-image {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        /* 右側文字內容區塊 */
+        .card-content {
+            flex: 1; /* 左右各佔一半空間 */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* 內容靠左對齊 */
+        }
+
+        /* 小標題 (Special Treatments) */
+        .content-title {
+            font-size: 1.6rem;
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        /* 內文說明 */
+        .content-text {
+            font-size: 1rem;
+            color: #555555;
+            line-height: 1.7; /* 讓文字排版有呼吸空間，不擁擠 */
+            margin-bottom: 30px;
+        }
+
+        /* 按鈕 (GET A VOUCHER) */
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            background-color: #3b82f6;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        /* 📱 響應式設計：手機版自動變成上下排列 */
+        @media (max-width: 768px) {
+            .detail-card {
+                flex-direction: column; /* 縮小螢幕時，改為上下疊放 */
+                padding: 30px 20px;
+                gap: 30px;
+            }
+            .page-header {
+                font-size: 1.6rem;
+                margin-bottom: 20px;
+            }
+            .content-title {
+                font-size: 1.35rem;
+                margin-bottom: 12px;
+            }
+            .content-text {
+                font-size: 0.95rem;
+                margin-bottom: 20px;
+            }
+        }
+         /* 🛠️ 新增：右下角固定按鈕樣式 */
+        .fixed-btn {
+            position: fixed;
+            bottom: 30px;  /* 距離底部 30 像素 */
+            right: 30px;   /* 距離右邊 30 像素 */
+            background-color: #ffffff;
+            color: #1e40af;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 30px; /* 膠囊狀圓角 */
+            font-weight: bold;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.95rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000; /* 確保按鈕永遠疊在最上層，不會被照片遮住 */
+            
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 右下角按鈕滑鼠懸停效果 */
+        .fixed-btn:hover {
+            background-color: #1e40af;
+            color: #ffffff;
+            transform: translateY(-3px); /* 微微往上浮起 */
+            box-shadow: 0 15px 30px rgba(30, 64, 175, 0.4);
+        }
+
+        /* 📱 手機版調整 */
+        @media (max-width: 768px) {
+            .gallery-container {
+                flex-direction: column;
+                padding: 20px;
+                gap: 20px;
+            }
+            .photo-card {
+                aspect-ratio: 4 / 3;
+            }
+            /* 手機版按鈕可以稍微縮小一點點或移高一點，避免擋到內容 */
+            .fixed-btn {
+                bottom: 20px;
+                right: 20px;
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="page-header">嘟嘟車/三輪車</h1>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/30-pancake.jpg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">偷拔蔥手作蔥抓餅</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>從出社會就開始外食族的闆娘,非常喜歡吃麵皮類的食物當作正餐 但記憶裡,古早味餅皮常常是用油炸或半油煎方式下去料理。 憶起兒時的記憶點.且用創新的方式傳達及傳承阿嬤的古早味. 從麵糰的揉製、層次的摺疊，到蔥花的比例與香氣， 每一個步驟都不偷工、不取巧，堅守只做我們自己敢吃、 是種阿嬤都想分享的傳統味道。 以少油方式煎至外脆內軟層次豐富的口感 用最簡單天然的調味吃到記憶中最熟悉的小吃!
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>
+                <br><b>抓餅吃鹹鹹:</b>
+                <br>偷拔蔥餅 / 蔥肉餅 / 燒肉蛋抓餅 / 燻雞蛋抓餅 / 塔香豬柳蛋抓餅 / 玉米蛋抓餅 / 塔香蛋抓餅 / 拉絲雙倍起司蛋抓餅 / 德式香腸蛋抓餅 / 剁椒豬柳蛋抓餅
+                <br><b>吃甜甜:</b>
+                <br>甘梅抓餅 / 煉乳抓餅 / 巧克力抓餅
+                <br><b>捲餅類：</b>
+                <br>燻雞雞肉捲 / 燒肉捲 / 德式香腸捲
+                <br><b>冷飲類：</b>
+                <br>古早味紅茶 / 冷泡烏龍青 / 冬瓜撞檸檬 / 泰泰喝奶茶
+            </p>
+            <a href="30_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/31-dolo.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">DOLO FRIES 多肉薯條</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>曾經在加拿大吃到熱騰騰的pontine，炸得酥脆的薯條，淋上肉醬，放上一點乳酪，這份美味深刻的印在腦海裡。回到故鄉高雄創業第一個想到就是自己最愛的pontine，不斷嘗試各種薯條與醬料後，於2019創立了‘’DOLO FRIES 多肉薯條‘’，帶給大家不一樣的薯條吃法，有更好吃的醬料可以選擇。
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>薯條 / 雞塊 / 雞丁 / 雞軟骨
+            </p>
+
+            <a href="31_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+
+    
+
+
+    <a href="more.html" class="fixed-btn">
+        ⬅️ 返回攤位類型
+    </a>
+</body>
+</html>

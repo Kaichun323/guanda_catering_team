@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>攤位型態</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /* 延續第一頁的藍色漸層背景 */
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #93c5fd 100%);
+            padding: 40px 20px;
+        }
+
+        /* 頁面大標題 */
+        .page-title {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .page-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* 垂直列表容器 */
+        .grid-container {
+            display: flex;
+            flex-direction: column; /* 讓卡片由上至下一行一行排列 */
+            gap: 16px;              /* 卡片之間的上下間距 */
+            max-width: 650px;       /* 縮小寬度，讓長條狀在畫面上比例更精緻 */
+            width: 100%;
+        }
+
+        /* 分類卡片樣式（長條清單版） */
+        .category-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 22px 35px;     /* 上下縮短、左右留白 */
+            text-align: left;       /* 文字靠左對齊，一行行看過去最整齊 */
+            cursor: pointer;
+            text-decoration: none;  /* 移除超連結底線 */
+            color: #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease; /* 讓懸停動畫變流暢 */
+            width: 100%;            /* 寬度填滿容器 */
+        }
+
+        /* 滑鼠移上去的互動效果（Hover） */
+        .category-card:hover {
+            transform: translateX(8px); /* 滑鼠移上去時，卡片往右滑動，很有質感 */
+            background: rgba(255, 255, 255, 0.95); /* 變得更白更亮 */
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;  /* 邊框變藍色 */
+        }
+
+        /* 卡片標題 */
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e40af;
+            line-height: 1.2;
+        }
+
+        /* 手機版自動調整標題大小 */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            .category-card {
+                padding: 18px 25px; /* 手機版內縮小一點 */
+            }
+            .card-title {
+                font-size: 1.15rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="page-title">選擇攤位類型</h1>
+    <p class="page-subtitle">挑選想要的攤位類型</p>
+
+    <div class="grid-container">
+
+        <a href="mobile_food _truck.html" class="category-card">
+            <div class="card-title">行動餐車/胖卡(人在地上)</div>
+        </a>
+
+        <a href="floor_table_stall.html" class="category-card">
+            <div class="card-title">落地桌攤</div>
+        </a>
+
+        <a href="ua_food_truck.html" class="category-card">
+            <div class="card-title">美式餐車(人在車上)</div>
+        </a>
+
+        <a href="tuk_tuk.html" class="category-card">
+            <div class="card-title">嘟嘟車/三輪車</div>
+        </a>
+
+        <a href="else.html" class="category-card">
+            <div class="card-title">其他</div>
+        </a>
+        
+    </div>
+
+</body>
+</html>

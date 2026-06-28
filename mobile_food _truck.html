@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>攤位詳情介紹</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /* 延續前面頁面的藍色漸層背景 */
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #93c5fd 100%);
+            padding: 40px 20px;
+        }
+
+        /* 大標題（對應圖中的 About our Spa） */
+        .page-header {
+            color: white;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* 中央主要的毛玻璃大卡片 */
+        .detail-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px; /* 完美的圓角感 */
+            max-width: 1000px;
+            width: 100%;
+            padding: 50px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            
+            /* 關鍵：利用 flex 讓內容左右並排 */
+            display: flex;
+            align-items: center;
+            gap: 50px; /* 左右兩區塊的間距 */
+        }
+
+        /* 左側圖片區塊 */
+        .card-image-wrapper {
+            flex: 1; /* 左右各佔一半空間 */
+            width: 100%;
+        }
+
+        .card-image {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        /* 右側文字內容區塊 */
+        .card-content {
+            flex: 1; /* 左右各佔一半空間 */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* 內容靠左對齊 */
+        }
+
+        /* 小標題 (Special Treatments) */
+        .content-title {
+            font-size: 1.6rem;
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        /* 內文說明 */
+        .content-text {
+            font-size: 1rem;
+            color: #555555;
+            line-height: 1.7; /* 讓文字排版有呼吸空間，不擁擠 */
+            margin-bottom: 30px;
+        }
+
+        /* 按鈕 (GET A VOUCHER) */
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            background-color: #3b82f6;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        /* 📱 響應式設計：手機版自動變成上下排列 */
+        @media (max-width: 768px) {
+            .detail-card {
+                flex-direction: column; /* 縮小螢幕時，改為上下疊放 */
+                padding: 30px 20px;
+                gap: 30px;
+            }
+            .page-header {
+                font-size: 1.6rem;
+                margin-bottom: 20px;
+            }
+            .content-title {
+                font-size: 1.35rem;
+                margin-bottom: 12px;
+            }
+            .content-text {
+                font-size: 0.95rem;
+                margin-bottom: 20px;
+            }
+        }
+         /* 🛠️ 新增：右下角固定按鈕樣式 */
+        .fixed-btn {
+            position: fixed;
+            bottom: 30px;  /* 距離底部 30 像素 */
+            right: 30px;   /* 距離右邊 30 像素 */
+            background-color: #ffffff;
+            color: #1e40af;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 30px; /* 膠囊狀圓角 */
+            font-weight: bold;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.95rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000; /* 確保按鈕永遠疊在最上層，不會被照片遮住 */
+            
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 右下角按鈕滑鼠懸停效果 */
+        .fixed-btn:hover {
+            background-color: #1e40af;
+            color: #ffffff;
+            transform: translateY(-3px); /* 微微往上浮起 */
+            box-shadow: 0 15px 30px rgba(30, 64, 175, 0.4);
+        }
+
+        /* 📱 手機版調整 */
+        @media (max-width: 768px) {
+            .gallery-container {
+                flex-direction: column;
+                padding: 20px;
+                gap: 20px;
+            }
+            .photo-card {
+                aspect-ratio: 4 / 3;
+            }
+            /* 手機版按鈕可以稍微縮小一點點或移高一點，避免擋到內容 */
+            .fixed-btn {
+                bottom: 20px;
+                right: 20px;
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="page-header">行動餐車/胖卡(人在地上)</h1>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/01-stinky_tofu.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">飛黃騰達-雙享脆</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>黃金泡菜 / 臭豆腐 / 炸物
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>黃金泡菜 / 臭豆腐 / 炸物
+            </p>
+
+            <a href="01_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/02-pizza.jpg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">初衷義式窯烤披薩</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>來自南義的拿坡里披薩風格,結合在地食材及進口麵粉，從產地到餐桌給你最健康的披薩。
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>義式披薩
+            </p>
+
+            <a href="02_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/01-stinky_tofu.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">飛黃騰達-雙享脆</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>黃金泡菜 / 臭豆腐 / 炸物
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>黃金泡菜 / 臭豆腐 / 炸物
+            </p>
+
+            <a href="01_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/03-honey.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">蜂蜜圈圈</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>
+              <br>蜂蜜圈專賣🔺義式咖啡🔺蜂蜜飲品🔺韓式可朗芙🔺</br>
+
+                韓式可朗芙又稱可頌鬆餅！</br>
+                是韓國流行小點，吃起來口感酥脆，甜度適中！</br>
+
+                蜂蜜特調飲品，使用的蜂蜜都是自家養殖100%自然熟成蜜！（來自台東妡蜜蜂場）</br>
+                自然熟成蜜沒有經過任何加工跟濃縮，所以喝起帶有花香氣又不死甜！</br>
+
+                義式咖啡我是是用專業的義式咖啡機萃取咖啡液，咖啡豆挑選為中深焙，口感厚實帶有巧克力堅果香氣！</br>
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>義式咖啡 / 蜂蜜飲產品 / 可頌鬆餅
+            </p>
+
+            <a href="03_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/04-douhua.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">初甜豆花</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>
+              <br>初甜💫來自基隆廟口⛩的豆花餐車🚚</br>
+                將傳統文化結合餐車模式🚚</br>
+                巡迴快閃全臺各縣市</br>
+                帶給冰友們🧊清涼消暑❄️</br>
+                <br>
+                ✨初甜✨<br>
+                豆花都是使用非基因改黃豆<br>
+                傳統作法使得豆花Q彈滑嫩<br>
+                主打邊走邊喝改變刻板印象<br>
+                顛覆傳統改用手搖杯漱豆花🥤<br>
+                <br>
+                ✨糖水✨<br>
+                職人精神堅持手炒糖焦糖香氣四溢<br>
+                <br>
+                ✨特色飲品✨<br>
+                檸檬🍋金桔🍊來自屏東在地小農<br>
+                飲品的糖都是手炒糖<br>
+                建議甜度至少半糖才不失最佳風味<br>
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>豆花 / 飲品 / 甜品 / 甜湯
+            </p>
+
+            <a href="04_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/05-ice.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">小南叔叔霜淇淋</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>
+              <br>來自南國陽光最熱情的屏東，小南叔叔霜淇淋從一開始的簡單小攤車，到如今累積三年的好口碑，一路走來都只堅持一件事——用最實在的味道，給大家最單純的快樂。<br>
+                <br>
+                三年來，跑遍大小市集、園遊會、企業活動、廟會與各地慶典，無論風吹日曬，只為讓更多人吃到這份從屏東慢慢擴散出去的甜蜜。<br>
+                而最讓人暖心的是，每一支霜淇淋，都是小南叔叔親手捧出的真誠與熱情。<br>
+                <br>
+                從屏東出發，帶著夢想、努力與一台霜淇淋機，把甜味送到每一個笑容的地方。<br>
+                如果你還沒吃過，那絕對值得來一支；如果你吃過了，你就知道——那不是普通的霜淇淋，那是小南叔叔的招牌療癒魔法。<br>
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>霜淇淋
+            </p>
+
+            <a href="05_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/06-drink.jpg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">沐癮</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>
+              <br>沐癮。
+                一台出沒在高雄的行動飲料餐車。
+                <br>
+                堅持手工熬煮冬瓜、現點現萃茶飲，<br>
+                希望每一杯都保留自然順口的味道。<br>
+                想做出那種逛街、散步時，<br>
+                會讓人想慢慢喝完的飲料～<br>
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>
+                <br><b>【手工熬煮冬瓜】</b> <br>
+                * 冬瓜檸檬 / * 冬瓜鮮奶 / * 冬瓜茶 / * 冬瓜紅茶 / * 冬瓜綠茶 
+                * 冬瓜青茶 / * 冬瓜麥茶  / * 冬瓜觀音
+                <br><b>【萃茗茶系列】</b> 
+                * 桃香烏龍 / * 魚池紅玉
+                <br><b>【風味特調系列】</b> 
+                * 梅子可樂 / * 藍莓果茶
+                <br><b>【現萃茶系】</b>
+                <br>* 香韻紅茶 / * 清韻綠茶 / * 春韻青茶 /  * 炭焙觀音
+                <br><b>【鮮奶茶系列】</b> 
+                <br>* 紅茶鮮奶 / * 綠茶鮮奶 /  * 青茶鮮奶 /  * 觀音鮮奶 /  * 桃香烏龍鮮奶　
+                <br><b>【冬季限定】</b> 
+                * 桂圓紅棗 /  * 香醇可可
+            </p>
+
+            <a href="14_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/07-jenna-stick.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">法國道地吉拿棒</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>我們是專賣傳統整支長長的吉拿棒餐車，吉拿棒口味達市面上最多13種！水果類皆由純天然果乾製成～素食者也可享用哦！
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>吉拿棒 / 微笑薯餅 / 地瓜QQ球 / 泰奶 / 可爾必思 / 紅茶
+            </p>
+
+            <a href="06_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/08-hamburger.jpg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">超多汁手作漢堡</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>
+              <br>我們是喜歡到處趴趴走的餐車 
+
+                <br>我們有堅持手作牛肉豬肉的漢堡排
+
+                <br>讓大家都能享受到多汁的漢堡
+
+                <br>也有價格親民的韓式燒肉
+
+                <br>更有唰嘴的手炒爆米花
+
+                <br>一口接一口停不下來
+
+                <br>歡迎來吃美食聊天哦🍔🥓🍿
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>手作漢堡 / 韓式燒肉 / 手炒爆米花
+            </p>
+
+            <a href="07_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/09-balls.JPG" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">幸福地瓜球</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>
+                <br>品牌特色
+                <br>✔ 傳統手藝：遵循古法製作，還原地瓜球最純正的風味。
+                <br>✔ 嚴選食材：使用優質地瓜與天然原料，不添加多餘添加物。
+                <br>✔ 黃金比例：精心研發配方，打造外酥內Q、不油膩的絕佳口感。
+                <br>✔ 小顆經典：不同於大顆地瓜球，小顆地瓜球更易於入口，越吃越涮嘴。
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>地瓜球
+            </p>
+
+            <a href="08_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/10-aiyu.jpg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">金桔小站</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>
+                <br>我們是 一台人工職人(專職賣)
+                <br>🍋手洗檸檬愛玉餐車※
+                <br>我們的愛玉籽是來自嘉義[阿里山]
+                野生品種※
+                <br>採用手洗方式來-製作成整塊-
+                <br>《讓愛玉保留有濃濃 彈性膠質》
+                <br>《口感入口即化》
+                <br>《味道有淡淡植物香》
+                <br>在加上屏東小農種的
+                (檸檬-金桔-甘蔗-)
+               <br> 自己手炒糖-真的是可以喝到50年代爸爸傳承下來的好手藝
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>手洗檸檬愛玉
+            </p>
+
+            <a href="09_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/11-braised-food.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">勇辣❞麻辣燙</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>
+                <br>勇辣❞把招牌麻辣湯
+                <br>變成更涮嘴的麻辣滷味啦～
+                <br>很想吃辣 不想喝湯 
+                <br>可以來市集找我們吃麻辣滷味
+                <br>嚴選火鍋料 × 手炒辣醬 × 自製川味粉
+                <br>香氣一上來，真的會忍不住一口接一口
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>麻辣滷味
+            </p>
+
+            <a href="10_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/12-pizza-two.jpg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">Wow's pizza 我是披薩</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>
+                <br>1. Wow's Pizza 我是披薩的前身為 Color's Pizza ,當初為了圓 夢~"做出老少咸宜的平價窯烤 PIZZA"，創立了手工窯烤 PIZZA 行 動餐車。但 Color's Pizza 在獲食尚玩家，民視等各大媒體報導 後，即被別人先行註冊，故老闆只好改以 Wow's Pizza(我是披薩) 註冊重新出發，希望讓更多人認識這個品牌，2023年參加高雄市政府 舉辦第一屆的城市嶼浪市集網路人氣比賽得到第一名
+                <br>
+                <br>2. 每日手工製作麵糰餅皮，堅持嚴格把關每道工序，主打低鹽少 油更健康，餅皮外酥內軟可咀嚼出麵粉的香氣且吃了不會脹氣
+                <br>
+                <br>3.手工窯烤 PIZZA 現點現做可依客人需求調整食材內容90秒快速出爐。
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>披薩
+            </p>
+
+            <a href="11_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/13-fried-dumplings.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">瑞秋煎餃</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>瑞秋煎餃傳承爸媽近20年好味道，堅持選用新鮮食材，精心調配比例，現煎手工煎餃搭配健康沙拉，打造道地又清爽的美味。透過行動餐車穿梭高屏南台灣各大市集和活動，讓更多人享受熱騰騰的家鄉味與貼心服務。
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>手工煎餃 / 蘿蔔糕
+            </p>
+
+            <a href="12_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/14-bei.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">南漂阿北</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>台北人 台南魂 美味的蔬食料理。
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>金針麵線糊 / 手工紫菜糕
+            </p>
+
+            <a href="13_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/15-braised.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">飛黃騰達-滷味行動餐車</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>
+              <br>飛黃騰達-滷味行動餐車
+                <br>起航 於 2021/01/15
+                <br>本 餐車 冷 / 熱滷味 都🈶️
+                <br>《（冷滷味加熱）/青菜/麵點/火鍋料》
+                <br>一次🈵️足 各位粉粉們 您的味蕾
+                <br>在這 冷冷的天氣裡 暖和您的胃
+                <br>
+                <br>#市集活動
+                <br>#歡迎
+                <br>#廟會包車
+                <br>#公司行號包車
+                <br>#校園活動
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>冷 / 熱 / 麻辣 滷味 / 輕食餐盒 
+            </p>
+
+            <a href="15_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/16-hi.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">哩賀粿粿</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>
+                <br>《哩賀·粿粿》行動餐車來自台南永康！
+                <br>傳承阿公50年手藝的「大灣肉粿」，煎得外香內軟，肉燥醬汁是靈魂。另有古早味粉漿蛋餅，口感軟Q、蛋香濃郁；以及歐式燒餅，外酥內香、清爽不膩。每一口都是滿滿懷念的好味道！
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>大灣肉粿 / 歐式燒餅 / 粉漿蛋餅
+            </p>
+
+            <a href="16_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/17-ice-two.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">收放霜淇淋</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>我們的品牌是收放霜淇淋，主打特濃鮮乳以及新鮮水果口味，都是採用少糖的方式製作而成。
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>霜淇淋冰品 / 聖代霜淇淋
+            </p>
+
+            <a href="17_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <a href="more.html" class="fixed-btn">
+        ⬅️ 返回攤位類型
+    </a>
+</body>
+</html>
