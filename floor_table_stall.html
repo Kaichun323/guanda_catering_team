@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>攤位詳情介紹</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /* 延續前面頁面的藍色漸層背景 */
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #93c5fd 100%);
+            padding: 40px 20px;
+        }
+
+        /* 大標題（對應圖中的 About our Spa） */
+        .page-header {
+            color: white;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* 中央主要的毛玻璃大卡片 */
+        .detail-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px; /* 完美的圓角感 */
+            max-width: 1000px;
+            width: 100%;
+            padding: 50px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            
+            /* 關鍵：利用 flex 讓內容左右並排 */
+            display: flex;
+            align-items: center;
+            gap: 50px; /* 左右兩區塊的間距 */
+        }
+
+        /* 左側圖片區塊 */
+        .card-image-wrapper {
+            flex: 1; /* 左右各佔一半空間 */
+            width: 100%;
+        }
+
+        .card-image {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        /* 右側文字內容區塊 */
+        .card-content {
+            flex: 1; /* 左右各佔一半空間 */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* 內容靠左對齊 */
+        }
+
+        /* 小標題 (Special Treatments) */
+        .content-title {
+            font-size: 1.6rem;
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        /* 內文說明 */
+        .content-text {
+            font-size: 1rem;
+            color: #555555;
+            line-height: 1.7; /* 讓文字排版有呼吸空間，不擁擠 */
+            margin-bottom: 30px;
+        }
+
+        /* 按鈕 (GET A VOUCHER) */
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            background-color: #3b82f6;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        /* 📱 響應式設計：手機版自動變成上下排列 */
+        @media (max-width: 768px) {
+            .detail-card {
+                flex-direction: column; /* 縮小螢幕時，改為上下疊放 */
+                padding: 30px 20px;
+                gap: 30px;
+            }
+            .page-header {
+                font-size: 1.6rem;
+                margin-bottom: 20px;
+            }
+            .content-title {
+                font-size: 1.35rem;
+                margin-bottom: 12px;
+            }
+            .content-text {
+                font-size: 0.95rem;
+                margin-bottom: 20px;
+            }
+        }
+         /* 🛠️ 新增：右下角固定按鈕樣式 */
+        .fixed-btn {
+            position: fixed;
+            bottom: 30px;  /* 距離底部 30 像素 */
+            right: 30px;   /* 距離右邊 30 像素 */
+            background-color: #ffffff;
+            color: #1e40af;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 30px; /* 膠囊狀圓角 */
+            font-weight: bold;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.95rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000; /* 確保按鈕永遠疊在最上層，不會被照片遮住 */
+            
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 右下角按鈕滑鼠懸停效果 */
+        .fixed-btn:hover {
+            background-color: #1e40af;
+            color: #ffffff;
+            transform: translateY(-3px); /* 微微往上浮起 */
+            box-shadow: 0 15px 30px rgba(30, 64, 175, 0.4);
+        }
+
+        /* 📱 手機版調整 */
+        @media (max-width: 768px) {
+            .gallery-container {
+                flex-direction: column;
+                padding: 20px;
+                gap: 20px;
+            }
+            .photo-card {
+                aspect-ratio: 4 / 3;
+            }
+            /* 手機版按鈕可以稍微縮小一點點或移高一點，避免擋到內容 */
+            .fixed-btn {
+                bottom: 20px;
+                right: 20px;
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="page-header">落地桌攤</h1>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/18-food.jpg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">愷嵐美食伴手禮</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>手工涼糕遵循古早做法，口感軟嫩清爽不膩；肉乾以傳統手工製作，搭配真空技術鎖住鮮香，越嚼越有層次；小米麻糬Q彈細緻、內餡香甜，入口柔軟不黏牙，呈現最純粹的好味道。
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>筷子肉乾 / 手工涼糕 / 小米麻糬 / 棉花糖
+            </p>
+
+            <a href="18_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/19-rice.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">成功油飯</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>
+              <br>油飯，是台灣一種傳統的米食料理，通常是以蒸熟的糯米，拌入炒香的佐料。
+              <br>
+                <br>台灣人的習俗，家中若有嬰兒出生，會以麻油雞及油飯祭祖並分送親友。 油飯是米糕的別名。
+                <br>
+                <br>「成功油飯」，承襲阿嬤的手藝，阿嬤是辦桌師，在傳統的宴席上，台灣菜系，油飯佔著重要的角色，油飯不僅有飽足感，還很方便，不僅熱熱的吃，還是冷冷的吃，都有它不同的風味。
+                <br>
+                <br>「成功油飯」，由孫女跟孫婿，重新調整做法，讓油飯不那麽油，黃金比例的做法，也不失傳統的味道，目前不僅僅有傳統的「喜悅油飯」，也有年輕人最愛的「麻油香菇雞油飯」，養生茹素的「麻油珍菇油飯」，最近即將推出夏日口味「金沙香菇雞油飯」「塔香香菇雞油飯」，成功油飯延續阿嬤的好味道，發揚台灣菜系，讓傳統滋味，繼續飄香。
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>油飯
+            </p>
+
+            <a href="19_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/20-sweet.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">甜了點·手作甜點</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>
+              <br>甜了點·手工甜點，每一款甜品都是療癒的詮釋。
+              <br>我們的目標很簡單：讓每一個品嚐我們甜點的人，都能感受到那份源自內心的甜美與溫暖。
+              <br>每一個蛋糕、每一款甜點，都凝聚了我們對美食的熱愛和對細節的無比堅持，只為呈現最純粹、最美好的甜蜜時光。
+              <br>吃甜點可以治癒心情！ 
+              <br>而美味的甜點可以療癒心情。 
+              <br>吃了甜了點～一切都覺得甜了點！ 
+              <br>甜了點甜點⋯一點都不會很甜。
+              <br>《所有甜點都是甜闆手工製作》 
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>蛋糕甜點
+            </p>
+
+            <a href="20_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/21-guava.jpg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">有夠芭樂</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>
+              <br>甘草芭樂不只是街頭小吃，它代表的是一種「台式輕食尚」。
+                <br>我們嚴選高雄燕巢在地珍珠芭樂，果肉厚實、脆度最佳，支持在地農友。
+                <br>搭配純中藥甘草研磨和手作梅粉以及新鮮檸檬原汁與百香果原汁調味，提供健康美味的小點心。
+                <br>生活偶爾有澀味，但只要來到這裡，我們想給你一個「回甘」的理由。
+                <br>
+                <br>有事沒事來吃水果
+                <br>有夠芭樂就夠健康
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>甘草芭樂 / 其它水果
+            </p>
+
+            <a href="21_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/22-small.jpg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">小時候</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>
+              <br>兩個世代的回憶，交織出「小時候」這個溫暖的名字。
+                <br>我們不追求浮誇的裝飾，
+                <br>只想用最純真的味道，
+                <br>喚醒你心中那段單純美好的時光。
+                <br>來吧～
+                <br>一起回到「小時候」，
+                <br>找回那份屬於你的童年回憶。
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>雞蛋冰 / 煎鳥蛋 / 瓶裝復刻飲品
+            </p>
+
+            <a href="22_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/23-grilled-rolls.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">旗津順-烤小卷</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>在地高雄深耕經營十餘年，現由第二代承接家業，延續傳統美食——烤小卷的獨特風味，讓這份經典滋味持續傳承。從昔日的港灣攤販，到如今扎根於市區，我們始終堅持手工製作與匠心烹調，只為將最純粹的美味帶給每一位饕客。希望透過我們的用心，讓更多人品味到這份來自大海的鮮甜與溫度，感受高雄在地美食的獨特魅力。
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>燒烤海鮮 / 黑輪片
+            </p>
+
+            <a href="23_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/24-liquor.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">旗津順-燒酒螺</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>
+              <br>在地深耕高雄十餘年，我們始終堅持傳統美味的初衷，隨著後疫情時代的到來，我們勇敢轉型，賦予老味道全新的生命。將過去被視為庶民小吃的燒酒螺與無骨雞腳凍，透過嚴選食材、精緻擺盤與創新口味重新詮釋，讓人耳目一新——原來這些經典小吃，也能展現不凡質感與層次。
+                <br>
+                <br>同時，我們精心研發多款特色下酒菜，融合傳統與創意，搭配各式飲品更是絕配，讓每一位饕客在每一口之中，不僅能品嚐到熟悉的記憶，也能感受到我們對料理的用心。這不只是味蕾的饗宴，更是一段關於傳承與創新的故事，讓人一試成主顧、回味無窮。
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>燒酒螺 / 無骨雞腳凍
+            </p>
+
+            <a href="24_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/25-ai-chi.jpeg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">愛柒Ai Chi</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>創立於 2021 年，「愛柒」的誕生源自於一份對台灣土地的深厚情感。我們相信，最好的味道不必遠求。因此，我們致力於研發屬於「台灣味」的特色點心，堅持選用在地食材，透過手工製作與創新創意的結合，讓傳統點心作出令人驚豔的新滋味。
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>紫米糕 / 麻糬 / 芋泥球
+            </p>
+
+            <a href="25_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+    <p>　</p>
+
+    <div class="detail-card">
+        
+        <div class="card-image-wrapper">
+            <img src="img/car/26-dorayaki.jpg" alt="餐車圖片" class="card-image">
+        </div>
+
+        <div class="card-content">
+            <h2 class="content-title">怪獸鈴噹銅鑼燒 MonsterDorayaki</h2>
+            
+            <p class="content-text">
+              <b>品牌介紹：</b>再簡單的事都要用心做。堅持單純的成分,一百分的心意,只想給予一份純粹的小確幸甜點。
+            </p>
+
+            <p class="content-text">
+                <b>主要販售品項：</b>手作銅鑼燒
+            </p>
+
+            <a href="26_img.html" class="btn-action">
+                <span> 查看產品圖片</span>
+            </a>
+        </div>
+
+    </div>
+
+
+    <a href="more.html" class="fixed-btn">
+        ⬅️ 返回攤位類型
+    </a>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>冠達餐飲團隊.攤商簡介</title>
+    <style>
+        /* 重設基本樣式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            /* 讓身體至少跟瀏覽器視窗一樣高 */
+            min-height: 100vh; 
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 主視覺藍色背景區域 */
+        .hero-container {
+            /* flex: 1 會讓這個區塊自動伸展，填滿扣除導覽列後的所有空間 */
+            /* 因為現在沒有導覽列了，它會直接填滿整個螢幕高度 */
+            flex: 1; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            /* 藍色漸層背景 */
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #93c5fd 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 毛玻璃卡片效果 */
+        .hero-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 80px 40px;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 標題文字 */
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #333333;
+            line-height: 1.3;
+            margin-bottom: 40px;
+        }
+
+        .hero-title span {
+            color: #3b82f6;
+            display: block;
+            margin-top: 10px;
+        }
+
+        /* 按鈕區塊 */
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .btn-primary {
+            text-decoration: none;
+            background-color: #3b82f6;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 6px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            text-decoration: none;
+            color: #3b82f6;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .btn-secondary:hover {
+            color: #2563eb;
+        }
+
+        /* 響應式設計 (手機板調整) */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            .cta-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero-container">
+        
+        <div class="hero-card">
+            <h1 class="hero-title">
+                攤商介紹
+                <!-- <span>for your business</span> -->
+            </h1>
+            
+            <div class="cta-buttons">
+                <a href="more.html" class="btn-primary">查看更多</a>
+                <!-- <a href="#" class="btn-secondary">LEARN MORE</a> -->
+            </div>
+        </div>
+
+    </section>
+
+</body>
+</html>
